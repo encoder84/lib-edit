@@ -1331,7 +1331,109 @@ do
                     return colorpicker
                 end
 				-- // Returning + Other
-				return section
+                function section:Keybind(keybindInfo)
+                    -- // Variables
+                    local info = keybindInfo or {}
+                    local keybind = {
+                        key = (info.Default or info.default or info.Def or info.def or nil),
+                        callback = (info.Callback or info.callback or function() end),
+                        onchange = (info.OnChange or info.onchange or function() end),
+                        binding = false
+                    }
+                    -- // Utilisation
+                    local contentHolder = utility:Create({Type = "Frame", Properties = {
+                        BackgroundTransparency = 1,
+                        BorderSizePixel = 0,
+                        Parent = sectionContentHolder,
+                        Size = UDim2.new(1, 0, 0, 20)
+                    }})
+                    --
+                    local keybindButton = utility:Create({Type = "TextButton", Properties = {
+                        BackgroundTransparency = 1,
+                        BorderSizePixel = 0,
+                        Parent = contentHolder,
+                        Position = UDim2.new(0, 0, 0, 0),
+                        Size = UDim2.new(1, 0, 1, 0),
+                        Text = ""
+                    }})
+                    --
+                    local keybindTitle = utility:Create({Type = "TextLabel", Properties = {
+                        AnchorPoint = Vector2.new(0, 0),
+                        BackgroundTransparency = 1,
+                        BorderSizePixel = 0,
+                        Parent = contentHolder,
+                        Size = UDim2.new(1, -16, 1, 0),
+                        Position = UDim2.new(0, 16, 0, 0),
+                        Font = "Code",
+                        RichText = true,
+                        Text = info.Name or info.name or "new keybind",
+                        TextColor3 = Color3.fromRGB(180, 180, 180),
+                        TextStrokeTransparency = 0.5,
+                        TextSize = 13,
+                        TextXAlignment = "Left"
+                    }})
+                    --
+                    local keybindValue = utility:Create({Type = "TextLabel", Properties = {
+                        AnchorPoint = Vector2.new(1, 0),
+                        BackgroundTransparency = 1,
+                        BorderSizePixel = 0,
+                        Parent = contentHolder,
+                        Size = UDim2.new(0, 60, 1, 0),
+                        Position = UDim2.new(1, -16, 0, 0),
+                        Font = "Code",
+                        RichText = true,
+                        Text = keybind.key and keybind.key.Name or "[None]",
+                        TextColor3 = Color3.fromRGB(159, 202, 43),
+                        TextStrokeTransparency = 0.5,
+                        TextSize = 13,
+                        TextXAlignment = "Right"
+                    }})
+                    
+                    -- // Functions
+                    local function setKey(key)
+                        keybind.key = key
+                        keybind.binding = false
+                        keybindValue.Text = key and key.Name or "[None]"
+                        keybindValue.TextColor3 = Color3.fromRGB(159, 202, 43)
+                        pcall(keybind.onchange, key)
+                    end
+                    
+                    utility:Connection({Type = keybindButton.MouseButton1Click, Callback = function()
+                        keybind.binding = true
+                        keybindValue.Text = "[...]"
+                        keybindValue.TextColor3 = Color3.fromRGB(200, 200, 50)
+                    end})
+                    
+                    utility:Connection({Type = uis.InputBegan, Callback = function(Input, GameProcessed)
+                        if keybind.binding then
+                             if Input.UserInputType == Enum.UserInputType.Keyboard then
+                                 if Input.KeyCode == Enum.KeyCode.Backspace then
+                                     setKey(nil)
+                                 else
+                                     setKey(Input.KeyCode)
+                                 end
+                             end
+                        else
+                             if not GameProcessed and keybind.key and Input.KeyCode == keybind.key then
+                                 pcall(keybind.callback, keybind.key)
+                             end
+                        end
+                    end})
+                    
+                    -- // API
+                    function keybind:Set(key)
+                        setKey(key)
+                    end
+                    function keybind:Get()
+                        return keybind.key
+                    end
+                    function keybind:SetVisible(state)
+                        contentHolder.Visible = state
+                    end
+                    
+                    section:Update()
+                    return keybind
+                end
 			end
 			-- // Returning + Other
 			page.Tab = tab
