@@ -1,4 +1,4 @@
--- // Library Tables
+-- // Library Tables changed
 local library = {}
 local utility = {}
 local obelus = {
@@ -1434,7 +1434,9 @@ do
                     section:Update()
                     return keybind
                 end
-			end
+                
+                return section
+            end
 			-- // Returning + Other
 			page.Tab = tab
 			page.PageHolder = pageHolder
