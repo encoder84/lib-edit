@@ -315,6 +315,12 @@ do
 				SortOrder = Enum.SortOrder.LayoutOrder
 			}})
 			--
+			utility:Create({Type = "UIPadding", Properties = {
+				PaddingTop = UDim.new(0, 8),
+				PaddingBottom = UDim.new(0, 10),
+				Parent = leftHolder
+			}})
+			--
 			local rightHolder = utility:Create({Type = "ScrollingFrame", Properties = {
 				AnchorPoint = Vector2.new(1, 0),
 				BackgroundTransparency = 1,
@@ -336,6 +342,12 @@ do
 				Padding = UDim.new(0, 10),
 				Parent = rightHolder,
 				SortOrder = Enum.SortOrder.LayoutOrder
+			}})
+			--
+			utility:Create({Type = "UIPadding", Properties = {
+				PaddingTop = UDim.new(0, 8),
+				PaddingBottom = UDim.new(0, 10),
+				Parent = rightHolder
 			}})
 			-- // Functions / Connections
 			utility:Connection({Type = tabButton.MouseButton1Down, Callback = function()
