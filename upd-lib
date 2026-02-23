@@ -335,7 +335,6 @@ do
 				BottomImage = "",
 				MidImage = "",
 				TopImage = "",
-				VerticalScrollBarInset = ""
 			}})
 			--
 			utility:Create({Type = "UIListLayout", Properties = {
