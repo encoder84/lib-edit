@@ -302,9 +302,9 @@ do
 				AutomaticCanvasSize = "Y",
 				ScrollBarThickness = 3,
 				ScrollBarImageColor3 = Color3.fromRGB(65, 65, 65),
-				BottomImage = "rbxassetid://7783554086",
-				MidImage = "rbxassetid://7783554086",
-				TopImage = "rbxassetid://7783554086",
+				BottomImage = "",
+				MidImage = "",
+				TopImage = "",
 				VerticalScrollBarInset = "ScrollBar"
 			}})
 			--
@@ -332,10 +332,10 @@ do
 				AutomaticCanvasSize = "Y",
 				ScrollBarThickness = 3,
 				ScrollBarImageColor3 = Color3.fromRGB(65, 65, 65),
-				BottomImage = "rbxassetid://7783554086",
-				MidImage = "rbxassetid://7783554086",
-				TopImage = "rbxassetid://7783554086",
-				VerticalScrollBarInset = "ScrollBar"
+				BottomImage = "",
+				MidImage = "",
+				TopImage = "",
+				VerticalScrollBarInset = ""
 			}})
 			--
 			utility:Create({Type = "UIListLayout", Properties = {
@@ -445,7 +445,7 @@ do
 					Position = UDim2.new(0, 0, 1, 0),
 					Size = UDim2.new(1, 0, 0, 20),
 					ZIndex = 2,
-					Image = "rbxassetid://7783533907",
+					Image = "",
 					ImageTransparency = 0,
 					ImageColor3 = Color3.fromRGB(19, 19, 19),
 					ScaleType = "Stretch"
@@ -459,12 +459,12 @@ do
 					Size = UDim2.new(1, 0, 1, 0),
 					ZIndex = 4,
 					AutomaticCanvasSize = "Y",
-					BottomImage = "rbxassetid://7783554086",
+					BottomImage = "",
 					CanvasSize = UDim2.new(0, 0, 0, 0),
-					MidImage = "rbxassetid://7783554086",
+					MidImage = "",
 					ScrollBarImageColor3 = Color3.fromRGB(65, 65, 65),
 					ScrollBarThickness = 4,
-					TopImage = "rbxassetid://7783554086",
+					TopImage = "",
 					VerticalScrollBarInset = "ScrollBar"
 				}})
 				--
