@@ -1,5 +1,29 @@
     -- // Library Tables
 local library = {}
+
+-- // Global Theme (Can be accessed/modified externally)
+library.Theme = {
+    Background = Color3.fromRGB(12, 12, 12),
+    Outline = Color3.fromRGB(51, 51, 51),
+    AccentLine1 = Color3.fromRGB(159, 202, 43),
+    AccentLine2 = Color3.fromRGB(100, 130, 25),
+    TopBar = Color3.fromRGB(1, 1, 1),
+    PagesBackground = Color3.fromRGB(13, 13, 13),
+    TextTitle = Color3.fromRGB(142, 142, 142),
+    TextMain = Color3.fromRGB(180, 180, 180),
+    TextHighlight = Color3.fromRGB(205, 205, 205),
+    SectionBackground = Color3.fromRGB(19, 19, 19),
+    SectionOutline = Color3.fromRGB(45, 45, 45),
+    SectionTitleLine = Color3.fromRGB(19, 19, 19),
+    ElementBackground = Color3.fromRGB(25, 25, 25),
+    ToggleBackground = Color3.fromRGB(63, 63, 63),
+    SliderBackground = Color3.fromRGB(63, 63, 63),
+    DropdownBackground = Color3.fromRGB(25, 25, 25),
+    ListBackground = Color3.fromRGB(45, 45, 45),
+    ListInline = Color3.fromRGB(25, 25, 25),
+    ScrollBar = Color3.fromRGB(65, 65, 65),
+}
+
 local utility = {}
 local obelus = {
 	connections = {}
@@ -23,6 +47,8 @@ do
 				end
 			end
 			--
+            if not library.ThemedElements then library.ThemedElements = {} end
+            table.insert(library.ThemedElements, {Instance = instance, OriginalProperties = createInfo.Properties})
 			return instance
 		end
 	end
@@ -55,6 +81,41 @@ do
 end
 -- // Ui Functions
 do
+    function library:UpdateTheme()
+        if not library.ThemedElements then return end
+        
+        local color_maps = {
+            [Color3.fromRGB(12, 12, 12)] = "Background",
+            [Color3.fromRGB(51, 51, 51)] = "Outline",
+            [Color3.fromRGB(159, 202, 43)] = "AccentLine1",
+            [Color3.fromRGB(100, 130, 25)] = "AccentLine2",
+            [Color3.fromRGB(1, 1, 1)] = "TopBar",
+            [Color3.fromRGB(13, 13, 13)] = "PagesBackground",
+            [Color3.fromRGB(142, 142, 142)] = "TextTitle",
+            [Color3.fromRGB(180, 180, 180)] = "TextMain",
+            [Color3.fromRGB(205, 205, 205)] = "TextHighlight",
+            [Color3.fromRGB(19, 19, 19)] = "SectionBackground",
+            [Color3.fromRGB(45, 45, 45)] = "SectionOutline",
+            [Color3.fromRGB(25, 25, 25)] = "ElementBackground",
+            [Color3.fromRGB(63, 63, 63)] = "ToggleBackground",
+            [Color3.fromRGB(65, 65, 65)] = "ScrollBar"
+        }
+        
+        for _, objStruct in ipairs(library.ThemedElements) do
+            local inst = objStruct.Instance
+            if not inst or not inst.Parent then continue end
+            for propName, originalVal in pairs(objStruct.OriginalProperties) do
+                if typeof(originalVal) == "Color3" then
+                    for originalRGB, themeKey in pairs(color_maps) do
+                        if originalVal == originalRGB then
+                            pcall(function() inst[propName] = library.Theme[themeKey] end)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
 	function library:Window(windowInfo)
 		-- // Variables
 		local info = windowInfo or {}
@@ -363,7 +424,7 @@ do
 			end})
 			-- // Nested Functions
 			function page:Turn(state)
-				tabTitle.TextColor3 = state and Color3.fromRGB(159, 202, 43) or Color3.fromRGB(142, 142, 142)
+				tabTitle.TextColor3 = state and library.Theme.AccentLine1 or library.Theme.TextTitle
 				tabGradient.Color = state and ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(155, 155, 155))}) or ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 100, 100))})
 				--
 				page.PageHolder.Visible = state
@@ -538,6 +599,103 @@ do
 					section:Update()
 					--
 					return label
+				end
+				--
+				function section:TextBox(textboxInfo)
+					-- // Variables
+					local info = textboxInfo or {}
+					local textbox = {
+						value = (info.Default or info.default or info.Def or info.def or ""),
+						callback = (info.Callback or info.callback or function() end),
+						placeholder = (info.Placeholder or info.placeholder or "")
+					}
+					
+					-- // Utilisation
+					local contentHolder = utility:Create({Type = "Frame", Properties = {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = sectionContentHolder,
+						Size = UDim2.new(1, 0, 0, 36)
+					}})
+					--
+					local textboxTitle = utility:Create({Type = "TextLabel", Properties = {
+						AnchorPoint = Vector2.new(0, 0),
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = contentHolder,
+						Size = UDim2.new(1, -16, 0, 14),
+						Position = UDim2.new(0, 16, 0, 0),
+						Font = "Code",
+						RichText = true,
+						Text = info.Name or info.name or info.Text or info.text or "new textbox",
+						TextColor3 = library.Theme.TextMain,
+						TextStrokeTransparency = 0.5,
+						TextSize = 13,
+						TextXAlignment = "Left"
+					}})
+					--
+					local textboxFrame = utility:Create({Type = "Frame", Properties = {
+						BackgroundColor3 = library.Theme.TopBar,
+						BorderSizePixel = 0,
+						Parent = contentHolder,
+						Position = UDim2.new(0, 16, 0, 16),
+						Size = UDim2.new(1, -32, 0, 18)
+					}})
+					--
+					local textboxInline = utility:Create({Type = "Frame", Properties = {
+						BackgroundColor3 = library.Theme.ElementBackground,
+						BorderSizePixel = 0,
+						Parent = textboxFrame,
+						Position = UDim2.new(0, 1, 0, 1),
+						Size = UDim2.new(1, -2, 1, -2)
+					}})
+					--
+					local boxInput = utility:Create({Type = "TextBox", Properties = {
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = textboxInline,
+						Position = UDim2.new(0, 4, 0, 0),
+						Size = UDim2.new(1, -8, 1, 0),
+						Font = "Code",
+						PlaceholderText = textbox.placeholder,
+						Text = textbox.value,
+						TextColor3 = library.Theme.TextMain,
+						TextSize = 13,
+						TextXAlignment = "Left",
+						ClearTextOnFocus = false
+					}})
+					
+					-- // Functions / Connections
+					local connection = utility:Connection({Type = boxInput.FocusLost, Callback = function(enterPressed)
+						textbox.value = boxInput.Text
+						pcall(textbox.callback, textbox.value)
+					end})
+					
+					-- // API
+					function textbox:Remove()
+						contentHolder:Remove()
+						textbox = nil
+						utility:RemoveConnection({Connection = connection})
+						connection = nil
+						section:Update()
+					end
+					
+					function textbox:Set(val)
+						textbox.value = val
+						boxInput.Text = val
+						pcall(textbox.callback, textbox.value)
+					end
+					
+					function textbox:Get()
+						return textbox.value
+					end
+					
+					function textbox:SetVisible(state)
+						contentHolder.Visible = state
+					end
+					
+					section:Update()
+					return textbox
 				end
 				--
 				function section:Toggle(toggleInfo)
