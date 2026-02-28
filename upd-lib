@@ -157,7 +157,8 @@ do
 
         utility:Connection({Type = uis.InputBegan, Callback = function(k, g)
             if not g then 
-                if k.KeyCode == Enum.KeyCode.RightShift then 
+                local targetKey = library.ToggleKey or Enum.KeyCode.RightShift
+                if k.KeyCode == targetKey then 
                     main.Visible = not main.Visible 
                 end
             end
